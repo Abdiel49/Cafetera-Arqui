@@ -1,0 +1,6 @@
+# develop
+.idea/
+out/
+
+# production
+# lib/
