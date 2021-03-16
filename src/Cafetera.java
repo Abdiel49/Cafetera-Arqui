@@ -14,7 +14,7 @@ public class Cafetera {
     return false;
   }
 
-  public  boolean thereIsStillCoffee( int quantity ){
+  private boolean thereIsStillCoffee( int quantity ){
     return coffeeQuantity >= quantity ;
   }
 }
