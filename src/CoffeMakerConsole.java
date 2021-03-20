@@ -3,40 +3,46 @@ import java.util.Scanner;
 public class CoffeMakerConsole {
 
   private final CustomCoffeemaker coffemaker;
-  private boolean start;
+  private boolean start, turnOn;
   private String[] menuOptions;
   
-  CoffeMakerConsole(CustomCoffeemaker coffemaker ){
+  CoffeMakerConsole( CustomCoffeemaker coffemaker ){
     this.coffemaker = coffemaker;
+    this.turnOn     = false;
   }
 
   public void start(){
     this.start = true;
-    loadMenuOptions();
     while ( start ){
       showMenu();
       int input = obtainValidInput();
       takeAction( input );
-      clearScreen();
     }
-  }
-
-  private void loadMenuOptions(){
-    this.menuOptions = new String[]{
-        " 0. Salir",
-        " 1. Cargar agua",
-        " 2. Cargar cafe",
-        " 3. Llenar una taza (200 ml) "
-    };
   }
   
   private void showMenu(){
+    loadMenuOptions();
     println("\t***\tCAFETERA\t***");
     for(String menuOption : menuOptions){
       println( menuOption );
     }
     println("ingrese el numero de la opcion para realizar una accion");
   }
+
+  private void loadMenuOptions(){
+    this.menuOptions = new String[]{
+        " 0. " + menuOptionOnOff(),
+        " 1. Cargar agua",
+        " 2. Cargar cafe",
+        " 3. Llenar una taza (200 ml) "
+    };
+  }
+
+  private String menuOptionOnOff(){
+    return this.turnOn ? "Apagar" : "Encender";
+  }
+
+//  private void showDetails(){  } need getters
 
   private int obtainValidInput(){
     while ( true ){
@@ -55,22 +61,27 @@ public class CoffeMakerConsole {
   }
 
   private boolean validateInput( int input ){
-    return input >= 0 && input < menuOptions.length;
+    return (input >= 0) && (input < menuOptions.length);
   }
 
   private void takeAction( int action ){
     switch (action){
-      case 0 -> stop();
+      case 0 -> switchOnOff();
       case 1 -> loadWater();
       case 2 -> loadCoffee();
       case 3 -> giveACoffee();
+//      case 4 -> stop();
     }
   }
 
-  private void stop(){
-    println("Gracias vuelva prontos");
-    start = false;
+  private void switchOnOff(){
+    this.turnOn = !this.turnOn;
   }
+
+//  private void stop(){
+//    println("Gracias vuelva prontos");
+//    start = false;
+//  }
 
   private void loadWater(){
     coffemaker.loadWater();
@@ -83,7 +94,7 @@ public class CoffeMakerConsole {
   }
 
   private void giveACoffee(){
-    if (coffemaker.giveACoffee(CoffeeType.COFFEE)) {
+    if (turnOn && coffemaker.giveACoffee(CoffeeType.COFFEE)) {
       println("Disfrute su Cafe!");
     } else {
       println("En este momento no es posible, " +
@@ -93,10 +104,5 @@ public class CoffeMakerConsole {
 
   private void println(String cad){
     System.out.println( cad );
-  }
-
-  private void clearScreen() {
-    System.out.print("\033[H\033[2J");
-    System.out.flush();
   }
 }

@@ -32,18 +32,14 @@ public class CustomCoffeemaker extends Cafetera{
     return false;
   }
 
-  private boolean canCoffeeBePrepared(int[] cValues){
+  private boolean canCoffeeBePrepared(int[] cValues) {
     boolean resp = false;
     try{
       resp =  checkWaterTank(   cValues[0] ) &&
               checkCoffeeTank(  cValues[1] ) &&
               checkBorraTank(   cValues[2] );
-    }catch (WaterException we){
-
-    }catch (CoffeException ce){
-
-    }catch (BorraException be){
-
+    }catch (WaterException | BorraException | CoffeException exception){
+      exception.printStackTrace();
     }
     return resp;
   }
@@ -52,21 +48,21 @@ public class CustomCoffeemaker extends Cafetera{
     if(WATER >= waterValue)
       return true;
     else
-      throw new WaterException("");
+      throw new WaterException("No hay awita");
   }
 
   private boolean checkCoffeeTank(int coffeValue) throws CoffeException{
     if(COFFEE >= coffeValue)
       return true;
-    else
-      throw new CoffeException("");
+   else
+     throw new CoffeException("No hay cafecito");
   }
 
   private boolean checkBorraTank(int borraValue)  throws BorraException{
     if( (BORRA+borraValue) <= MAX_BORRA) {
       return true;
     } else
-      throw new BorraException("cc");
+      throw new BorraException("deposito de borra esta lleno");
   }
 
 }
