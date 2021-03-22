@@ -34,7 +34,7 @@ public class CoffeMakerConsole implements Console {
     for(String menuOption : menuOptions){
       println( menuOption );
     }
-    println("ingrese el numero de la opcion para realizar una accion");
+    println("Ingrese el numero de la opcion para realizar una accion");
   }
 
   private void loadMenuOptions(){
