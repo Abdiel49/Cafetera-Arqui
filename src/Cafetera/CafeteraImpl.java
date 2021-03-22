@@ -1,45 +1,46 @@
+package Cafetera;
+
 import Enums.CoffeeMakers;
 import Enums.CoffeeType;
-import Events.EventChange;
 import Events.EventListener;
 import Events.EventTypes;
 
-public class CustomCoffeemaker extends Cafetera implements EventChange {
-  
+public class CafeteraImpl implements Cafetera {
+
   private  final CoffeeMakers coffeMaker;
   private EventListener listener;
   private int WATER, COFFEE, BORRA;
 
-  public CustomCoffeemaker(){
+  public CafeteraImpl() {
     this.coffeMaker = CoffeeMakers.COMMON;
   }
 
-  public void loadWater(){
-    this.WATER = coffeMaker.WATTER_CAPACITY();
-  }
-
-  public void loadCoffee(){
+  @Override public void loadCoffee() {
     this.COFFEE = coffeMaker.COFFEE_CAPACITY();
+    notifyListeners(EventTypes.COFFEE_FILLED);
   }
 
-  public boolean giveACoffee (CoffeeType coffeeType) {
+  @Override public void loadWater() {
+    this.WATER = coffeMaker.WATTER_CAPACITY();
+    notifyListeners( EventTypes.WATER_FILLED);
+  }
+
+  @Override public boolean giveACoffee(CoffeeType coffeeType) {
     if( canCoffeeBePrepared( coffeeType ) ){
       WATER   -= coffeeType.getWater();
       COFFEE  -= coffeeType.getCoffee();
       BORRA   += coffeeType.getBorra();
+      notifyListeners( EventTypes.SUCCESSFULLY );
       return true;
     }
     return false;
   }
 
   private boolean canCoffeeBePrepared(CoffeeType coffeeType) {
-    boolean resp = false;
-    if( checkWaterTank  ( coffeeType.getWater()  ) &&
-        checkCoffeeTank ( coffeeType.getCoffee() ) &&
-        checkBorraTank  ( coffeeType.getBorra()  ) ){
-      notifyListeners( EventTypes.SUCCESSFULLY );
-    }
-    return resp;
+    boolean water   = checkWaterTank  ( coffeeType.getWater() );
+    boolean coffee  = checkCoffeeTank ( coffeeType.getCoffee());
+    boolean borra   = checkBorraTank  ( coffeeType.getBorra() );
+    return water && coffee && borra;
   }
 
   private boolean checkWaterTank(int waterValue) {
@@ -47,7 +48,7 @@ public class CustomCoffeemaker extends Cafetera implements EventChange {
       notifyListeners( EventTypes.WATER_ERROR );
       return false;
     }
-    return false;
+    return true;
   }
 
   private boolean checkCoffeeTank(int coffeValue){
@@ -66,8 +67,7 @@ public class CustomCoffeemaker extends Cafetera implements EventChange {
     return true;
   }
 
-  @Override
-  public void subscribe(EventListener listener) {
+  @Override public void subscribe(EventListener listener) {
     this.listener = listener;
   }
 

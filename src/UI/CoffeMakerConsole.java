@@ -1,28 +1,36 @@
+package UI;
+
+import Cafetera.Cafetera;
+import Enums.CoffeeType;
+import Events.EventTypes;
+
 import java.util.Scanner;
 
-public class CoffeMakerConsole {
+public class CoffeMakerConsole implements Console {
 
-  private final CustomCoffeemaker coffemaker;
+  private final Cafetera coffemaker;
   private boolean start, turnOn;
   private String[] menuOptions;
   
-  CoffeMakerConsole( CustomCoffeemaker coffemaker ){
+  public CoffeMakerConsole(Cafetera coffemaker){
     this.coffemaker = coffemaker;
     this.turnOn     = false;
+    this.coffemaker.subscribe(this);
   }
 
-  public void start(){
+  @Override public void start(){
     this.start = true;
     while ( start ){
-      showMenu();
+      displayMenu();
       int input = obtainValidInput();
       takeAction( input );
     }
   }
   
-  private void showMenu(){
+  private void displayMenu(){
     loadMenuOptions();
-    println("\t***\tCAFETERA\t***");
+    println("\tCAFETERA\t"+ State.TURN_ON_OFF.getState());
+    displayDetails();
     for(String menuOption : menuOptions){
       println( menuOption );
     }
@@ -34,15 +42,22 @@ public class CoffeMakerConsole {
         " 0. " + menuOptionOnOff(),
         " 1. Cargar agua",
         " 2. Cargar cafe",
-        " 3. Llenar una taza (200 ml) "
+        " 3. Llenar una taza (200 ml)",
+        " 4. Salir"
     };
+  }
+
+  private void displayDetails(){
+    println("######################################");
+    println(  "\tAgua "  + State.WATER .getState() +
+              "\tCafe "  + State.COFFEE.getState() +
+              "\tBorra " + State.BORRA .getState() );
+    println("######################################");
   }
 
   private String menuOptionOnOff(){
     return this.turnOn ? "Apagar" : "Encender";
   }
-
-//  private void showDetails(){  } need getters
 
   private int obtainValidInput(){
     while ( true ){
@@ -70,36 +85,44 @@ public class CoffeMakerConsole {
       case 1 -> loadWater();
       case 2 -> loadCoffee();
       case 3 -> giveACoffee();
-//      case 4 -> stop();
+      case 4 -> stop();
     }
   }
 
   private void switchOnOff(){
     this.turnOn = !this.turnOn;
+    State.TURN_ON_OFF.switchState();
   }
 
-//  private void stop(){
-//    println("Gracias vuelva prontos");
-//    start = false;
-//  }
+  private void stop(){
+    println("Gracias vuelva prontos");
+    start = false;
+  }
 
   private void loadWater(){
     coffemaker.loadWater();
-    println("Recipiente de: Agua, lleno");
   }
 
   private void loadCoffee(){
     coffemaker.loadCoffee();
-    println("Recipiente de: Cafe, lleno");
   }
 
   private void giveACoffee(){
-    if (turnOn && coffemaker.giveACoffee(CoffeeType.COFFEE)) {
-      println("Disfrute su Cafe!");
-    } else {
-      println("En este momento no es posible, " +
-              "asegurece de cargar los recipientes");
+    if (turnOn) {
+      coffemaker.giveACoffee(CoffeeType.COFFEE);
     }
+  }
+
+  @Override
+  public void onEventOccurs(EventTypes event) {
+    switch (event){
+      case WATER_FILLED   -> State.WATER  .blue();
+      case WATER_ERROR    -> State.WATER  .red();
+      case COFFEE_FILLED  -> State.COFFEE .blue();
+      case COFFEE_ERROR   -> State.COFFEE .red();
+      case BORRA_ERROR    -> State.BORRA  .red();
+    }
+    println( event.getMessage() );
   }
 
   private void println(String cad){

@@ -1,3 +1,5 @@
+package Enums;
+
 public enum CoffeeType {
 
   COFFEE(200, 20, 25);
@@ -10,7 +12,15 @@ public enum CoffeeType {
     this.borra = borra;
   }
 
-  public int[] getValues(){
-    return new int[]{water, coffee, borra};
+  public int getWater() {
+    return water;
+  }
+
+  public int getCoffee() {
+    return coffee;
+  }
+
+  public int getBorra() {
+    return borra;
   }
 }
