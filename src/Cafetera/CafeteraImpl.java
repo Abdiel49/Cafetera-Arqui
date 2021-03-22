@@ -72,6 +72,8 @@ public class CafeteraImpl implements Cafetera {
   }
 
   private void notifyListeners(EventTypes event){
-    this.listener.onEventOccurs(event);
+    if(this.listener != null){
+      this.listener.onEventOccurs(event);
+    }
   }
 }

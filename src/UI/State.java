@@ -8,6 +8,7 @@ public enum State {
 
   private final String BLUE = "🔘", RED = "🔴"; // GREEN = "🟢";
   private String value;
+
   State(String state){
     this.value = state;
   }
