@@ -1,5 +1,5 @@
-import UI.Console;
-import UI.CoffeMakerConsole;
+import UI.console.Console;
+import UI.console.CoffeMakerConsole;
 import Cafetera.Cafetera;
 import Cafetera.CafeteraImpl;
 

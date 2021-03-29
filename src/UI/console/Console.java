@@ -1,4 +1,4 @@
-package UI;
+package UI.console;
 
 import Events.EventListener;
 

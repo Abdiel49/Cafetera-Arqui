@@ -1,8 +1,9 @@
-package UI;
+package UI.console;
 
 import Cafetera.Cafetera;
 import Enums.CoffeeType;
 import Events.EventTypes;
+import UI.State;
 
 import java.util.Scanner;
 
