@@ -1,17 +1,19 @@
 package Cafetera;
 // borra tank use this
-public class FillingTank extends Tank{
+public class GarbageTank extends Tank{
 
-  public FillingTank(int capacity){
+  public GarbageTank(int capacity){
     super(capacity);
   }
 
   public boolean canFillUp(int quantity){
-    if(this.quantity + quantity <= capacity){
+    return this.quantity + quantity <= capacity;
+  }
+
+  public void fillUp(int quantity){
+    if( canFillUp(quantity)){
       this.quantity += quantity;
-      return true;
     }
-    return false;
   }
 
   public void drainTank(){

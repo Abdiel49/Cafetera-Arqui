@@ -9,24 +9,25 @@ public class CafeteraImpl implements Cafetera {
 
   private EventListener listener;
   private final DrainTank waterTank, coffeeTank;
-  private final FillingTank borraTank;
+  private final GarbageTank borraTank;
   private boolean turnOn_OFf;
 
   public CafeteraImpl() {
     CoffeeMakers coffeMaker = CoffeeMakers.COMMON;
     this.turnOn_OFf = false;
-    this.waterTank  = new DrainTank  ( coffeMaker.WATTER_CAPACITY() );
-    this.coffeeTank = new DrainTank  ( coffeMaker.COFFEE_CAPACITY() );
-    this.borraTank  = new FillingTank( coffeMaker.BORRA_CAPACITY()  );
+    this.waterTank  = new DrainTank  (coffeMaker.WATTER_CAPACITY());
+    this.coffeeTank = new DrainTank  (coffeMaker.COFFEE_CAPACITY());
+    this.borraTank  = new GarbageTank(coffeMaker.BORRA_CAPACITY());
   }
 
-  @Override public void turnOnOff(){
+  @Override public boolean turnOnOff(){
     this.turnOn_OFf = !this.turnOn_OFf;
     EventTypes event;
-    event = this.turnOn_OFf ?
-              EventTypes.TURN_OFF :
-              EventTypes.TURN_ON;
+    event = turnOn_OFf ?
+            EventTypes.TURN_ON :
+            EventTypes.TURN_OFF;
     notifyListeners( event );
+    return this.turnOn_OFf;
   }
 
   @Override public void loadCoffee() {
@@ -40,13 +41,41 @@ public class CafeteraImpl implements Cafetera {
   }
 
   @Override public boolean giveACoffee(CoffeeType coffeeType) {
-    boolean water   = waterTank.canDrain (coffeeType.getWater());
-    boolean coffee  = coffeeTank.canDrain(coffeeType.getCoffee());
-    boolean borra   = borraTank.canFillUp(coffeeType.getBorra());
-    if(!borra){
-      notifyListeners(EventTypes.BORRA_ERROR);
+    if( turnOn_OFf ){
+      EventTypes event;
+      boolean result = checkTanks( coffeeType );
+      event = result ?
+              EventTypes.SUCCESSFULLY :
+              EventTypes.UN_SUCCESS;
+      notifyListeners( event );
+      return true;
     }
-    return turnOn_OFf && water && coffee && borra;
+    return false;
+  }
+
+  private boolean checkTanks(CoffeeType coffeeType){
+    int coffeeAmount = coffeeType.getCoffee(),
+        waterAmount  = coffeeType.getWater(),
+        borraAmount  = coffeeType.getBorra();
+    boolean water  = waterTank.canDrain ( waterAmount );
+    boolean coffee = coffeeTank.canDrain( coffeeAmount );
+    boolean borra  = borraTank.canFillUp( borraAmount );
+    if(!borra){
+      notifyListeners(EventTypes.BORRA_FILLED);
+      return false;
+    }
+    if( !water || !coffee ){
+      return false;
+    }
+    waterTank.drain(waterAmount);
+    coffeeTank.drain(coffeeAmount);
+    borraTank.fillUp(borraAmount);
+    return true;
+  }
+
+  @Override public void emptyBorra(){
+    this.borraTank.drainTank();
+    notifyListeners(EventTypes.BORRA_EMPTIED);
   }
 
   @Override public void subscribe(EventListener listener) {

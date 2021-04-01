@@ -11,6 +11,7 @@ class CafeteraImplTest {
     Cafetera coffeemaker = new CafeteraImpl();
     coffeemaker.loadWater();
     coffeemaker.loadCoffee();
+    coffeemaker.turnOnOff();
     assertTrue( coffeemaker.giveACoffee( CoffeeType.COFFEE ) );
   }
 
@@ -24,6 +25,15 @@ class CafeteraImplTest {
     Cafetera coffeemaker = new CafeteraImpl();
     coffeemaker.loadWater();
     assertFalse( coffeemaker.giveACoffee( CoffeeType.COFFEE ) );
+  }
+
+  @Test void shouldGiveTwoCoffees(){
+    Cafetera coffeemaker = new CafeteraImpl();
+    coffeemaker.loadWater();
+    coffeemaker.loadCoffee();
+    coffeemaker.turnOnOff();
+    coffeemaker.giveACoffee( CoffeeType.COFFEE );
+    coffeemaker.giveACoffee( CoffeeType.COFFEE );
   }
 
   @Test void shouldNotGiveMoreThanSevenCoffees(){

@@ -1,28 +1,29 @@
 package UI;
 
 public enum State {
-  TURN_ON_OFF ("🔴"),
-  WATER       ("🔴"),
-  COFFEE      ("🔴"),
-  BORRA       ("🔘");
+  BORRA_FILLED(false),
+  SUCCESS     (false),
+  TURN_ON_OFF (false);
 
-  private final String BLUE = "🔘", RED = "🔴"; // GREEN = "🟢";
-  private String value;
+  private boolean state;
 
-  State(String state){
-    this.value = state;
+  State(boolean state){
+    this.state = state;
   }
-  public String getState(){
-    return this.value;
+  public boolean getState(){
+    return state;
   }
-  public void red(){
-    this.value = RED;
+  public void falseState(){
+    this.state = false;
   }
-  public void blue(){
-    this.value = BLUE;
+
+  public void trueState(){
+    this.state = true;
   }
+
   public void switchState(){
-    this.value = this.value.equals(BLUE) ? RED : BLUE;
+    state = !state;
   }
+
 
 }

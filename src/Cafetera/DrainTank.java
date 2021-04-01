@@ -7,11 +7,13 @@ public class DrainTank extends Tank{
   }
 
   public boolean canDrain(int quantity){
-    if(this.quantity - quantity >= 0){
+    return this.quantity - quantity >= 0;
+  }
+
+  public void drain(int quantity){
+    if(canDrain(quantity)){
       this.quantity -= quantity;
-      return true;
     }
-    return false;
   }
 
   public void fillTank(){
