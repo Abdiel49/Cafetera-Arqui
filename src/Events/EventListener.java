@@ -1,5 +1,5 @@
 package Events;
 
 public interface EventListener {
-  void onEventOccurs(EventTypes event);
+    void onEventOccurs(EventTypes event);
 }

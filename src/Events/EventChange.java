@@ -1,5 +1,5 @@
 package Events;
 
 public interface EventChange {
-  void subscribe(EventListener listener);
+    void subscribe(EventListener listener);
 }
